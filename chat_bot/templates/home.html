@@ -3,33 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LinkedIn Caption Writer</title>
-    <!-- Connect CSS -->
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
+    <title>CaptionAI — LinkedIn Caption Generator</title>
+    <meta name="description" content="CaptionAI - Generate engaging LinkedIn posts with AI. Powered by LangGraph.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <div class="container">
-        <h1>🚀 LinkedIn Caption Writer</h1>
-
-        <!-- Input Form -->
-        <form id="captionForm">
-            <label for="topic">Enter your topic:</label>
-            <input type="text" id="topic" name="topic" placeholder="e.g., AI in marketing" required>
-            <button type="submit">🚀 Generate Caption</button>
-        </form>
-
-        <!-- Loading -->
-        <p id="loading" class="hidden">⏳ Generating your LinkedIn caption...</p>
-
-        <!-- Output -->
-        <div class="output-box">
-            <p id="output"></p>
+<body class="dashboard-page">
+    <!-- Navigation Bar -->
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="nav-brand">
+            <i class="fa-solid fa-robot"></i>
+            <span>CaptionAI</span>
         </div>
-    </div>
+        <div class="nav-user">
+            <span class="user-name">Hello Ganesh 👋</span>
+            <div class="avatar" title="User profile"><i class="fa-solid fa-user"></i></div>
+        </div>
+    </nav>
 
-    <!-- Connect JS -->
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Left Side: Generator & Output -->
+        <section class="generator-section" id="generator">
+            <div class="card">
+                <h2><i class="fa-solid fa-pen-nib" style="color:var(--secondary);margin-right:0.5rem;font-size:1.1rem;"></i>Create a Post</h2>
+                <p class="text-muted mt-2">Enter a topic and let AI write an engaging LinkedIn caption for you.</p>
+
+                <form id="captionForm" class="mt-4">
+                    <div class="form-group">
+                        <label for="topic">Topic</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="topic" placeholder="Enter your topic (e.g., AI in healthcare)" required autocomplete="off">
+                            <button type="button" class="mic-btn" id="micBtn" title="Voice Input"><i class="fa-solid fa-microphone"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex-row">
+                        <div class="form-group flex-1">
+                            <label for="tone">Tone</label>
+                            <select id="tone" class="dropdown">
+                                <option value="Professional">🏢 Professional</option>
+                                <option value="Casual">💬 Casual</option>
+                                <option value="Motivational">🔥 Motivational</option>
+                            </select>
+                        </div>
+                        <button type="submit" id="submitBtn" class="btn-primary flex-2 mt-auto">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span>Generate Caption</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loading" class="card text-center hidden mt-4">
+                <div class="spinner"></div>
+                <p class="mt-3 loading-text">✨ Analyzing topic and crafting your caption...</p>
+                <p class="mt-2 text-muted" style="font-size:0.82rem;">This may take 10-15 seconds</p>
+            </div>
+
+            <!-- Error State -->
+            <div id="error-box" class="card mt-4 hidden error-card">
+                <div class="error-content">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    <div>
+                        <h3>Generation Failed</h3>
+                        <p id="error-message" class="text-muted"></p>
+                    </div>
+                </div>
+                <button id="retry-btn" class="btn-primary" style="margin-top:1rem;">
+                    <i class="fa-solid fa-rotate-right"></i> <span>Try Again</span>
+                </button>
+            </div>
+
+            <!-- Output Box -->
+            <div id="output-box" class="card mt-4 hidden output-card">
+                <div class="card-header border-bottom">
+                    <h3><i class="fa-solid fa-sparkles" style="color:var(--secondary);margin-right:0.4rem;"></i>Generated Result</h3>
+                    <div class="actions">
+                        <button id="copy-btn" class="btn-outline"><i class="fa-regular fa-copy"></i> Copy</button>
+                        <button id="regen-btn" class="btn-outline"><i class="fa-solid fa-rotate-right"></i> Regenerate</button>
+                    </div>
+                </div>
+                <div class="card-body mt-3">
+                    <p id="output" class="result-text"></p>
+                </div>
+                <div class="card-footer mt-4">
+                    <small id="timestamp" class="text-muted"></small>
+                    <div class="meta-info">
+                        <small id="charCount" class="char-count"></small>
+                        <small id="wordCount" class="char-count"></small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Right Side: History -->
+        <aside class="history-section" id="history">
+            <div class="card h-100">
+                <div class="card-header border-bottom">
+                    <h3><i class="fa-solid fa-clock-rotate-left" style="color:var(--secondary);margin-right:0.4rem;"></i>History</h3>
+                    <button id="clear-history-btn" class="btn-outline btn-sm hidden" title="Clear all history">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+                <div id="history-container" class="history-list mt-3">
+                    <div class="empty-state">
+                        <i class="fa-regular fa-folder-open"></i>
+                        <p>No captions yet. Make your first one!</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"><i class="fa-solid fa-check"></i> <span id="toast-message">Copied to clipboard!</span></div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-
 </body>
 </html>

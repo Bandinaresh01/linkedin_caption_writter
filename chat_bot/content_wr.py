@@ -31,6 +31,7 @@ parser = StrOutputParser()
 # -------------------------------
 class State(TypedDict):
     topic: str
+    tone: str
     post_caption: str
     review_content: str
     iteration: int
@@ -42,11 +43,20 @@ class State(TypedDict):
 def caption_writer(state: State):
 
     prompt_post = """
-    You are a senior LinkedIn post writer. Write an engaging, professional LinkedIn caption for the topic: {topic}
+    You are a senior LinkedIn post writer. Write an engaging LinkedIn caption for the topic: {topic}
+
+    Tone: {tone}
 
     Incorporate previous review suggestions: {review_content}
 
-    Guidelines: 100-200 words, hook + value + CTA, hashtags, emoji sparingly.
+    Guidelines:
+    - 100-200 words
+    - Start with a strong hook
+    - Provide value and insights
+    - End with a CTA (call to action)
+    - Include 3-5 relevant hashtags
+    - Use emoji sparingly but effectively
+    - Match the requested tone: Professional = formal and authoritative, Casual = friendly and conversational, Motivational = inspiring and uplifting
     """
 
     prompt = ChatPromptTemplate.from_messages([
@@ -57,6 +67,7 @@ def caption_writer(state: State):
 
     post_caption = chain.invoke({
         "topic": state["topic"],
+        "tone": state.get("tone", "Professional"),
         "review_content": state.get("review_content", "")
     })
 
@@ -136,15 +147,17 @@ app_graph = graph.compile(checkpointer=checkpointer)
 # -------------------------------
 # MAIN FUNCTION (IMPORTANT)
 # -------------------------------
-def generate_caption(topic):
+def generate_caption(topic, tone="Professional"):
     """
-    This is the function Flask will call
+    This is the function Flask will call.
+    Accepts topic and tone (Professional/Casual/Motivational).
     """
-
-    config = {"configurable": {"thread_id": "linkedin_post"}}
+    import uuid
+    config = {"configurable": {"thread_id": str(uuid.uuid4())}}
 
     result = app_graph.invoke({
         "topic": topic,
+        "tone": tone,
         "post_caption": "",
         "review_content": "",
         "iteration": 0
