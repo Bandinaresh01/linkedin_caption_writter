@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkedIn Caption Writer</title>
+    <!-- Connect CSS -->
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 LinkedIn Caption Writer</h1>
+
+        <!-- Input Form -->
+        <form id="captionForm">
+            <label for="topic">Enter your topic:</label>
+            <input type="text" id="topic" name="topic" placeholder="e.g., AI in marketing" required>
+            <button type="submit">🚀 Generate Caption</button>
+        </form>
+
+        <!-- Loading -->
+        <p id="loading" class="hidden">⏳ Generating your LinkedIn caption...</p>
+
+        <!-- Output -->
+        <div class="output-box">
+            <p id="output"></p>
+        </div>
+    </div>
+
+    <!-- Connect JS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+body {
+    font-family: Arial;
+    background-color: #f5f5f5;
+}
+
+/* Main container */
+.container {
+    width: 400px;
+    margin: 100px auto;
+    text-align: center;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Input box */
+input {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+/* Button */
+button {
+    padding: 10px;
+    background-color: #0077b5;  /* LinkedIn color */
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+/* Output box */
+.output-box {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+}
