@@ -56,7 +56,12 @@ def caption_writer(state: State):
     - End with a CTA (call to action)
     - Include 3-5 relevant hashtags
     - Use emoji sparingly but effectively
-    - Match the requested tone: Professional = formal and authoritative, Casual = friendly and conversational, Motivational = inspiring and uplifting
+    - Match the requested tone:
+      Professional = formal and authoritative
+      Casual = friendly and conversational
+      Motivational = inspiring and uplifting
+      Storytelling = narrative-driven with personal anecdotes and a relatable arc
+      Thought Leadership = bold opinions, industry insights, and forward-thinking vision
     """
 
     prompt = ChatPromptTemplate.from_messages([
