@@ -2,7 +2,11 @@
 
 from flask import Flask, render_template, request, jsonify
 from chat_bot.content_wr import generate_caption
-app = Flask(__name__, static_folder='static', template_folder='chat_bot/templates')
+app = Flask(
+    __name__,
+    static_folder="Static",
+    template_folder="chat_bot/templates"
+)
 
 
 @app.route("/")
